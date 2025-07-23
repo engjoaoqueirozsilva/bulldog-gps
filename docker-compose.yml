@@ -14,22 +14,19 @@ services:
       - "5000-5150:5000-5150/tcp"
       - "5000-5150:5000-5150/udp"
 
-    # Mapeamento de volumes persistentes.
-    # Não precisamos mais mapear o traccar.xml aqui, pois ele está embutido na imagem.
     volumes:
-      # Para logs
       - traccar_logs:/opt/traccar/logs:rw
-      # Para dados (cache de mapas, etc.)
       - traccar_data:/opt/traccar/data:rw
 
     environment:
       - TRACCAR_DATABASE_DRIVER=org.postgresql.Driver
-      - TRACCAR_DATABASE_URL=jdbc:postgresql://postgres://postgres:P0n3P5u7VBashK5ofQSBAYUTIVpOhvXdiElOreQx8ml3hE7vTx1ZssibOxv18MtP@j0448s8ks8swkww0w8wkg08g:5432/postgres
+      # MUDANÇA AQUI: Remova 'postgres://postgres:P0n3P5u7VBashK5ofQSBAYUTIVpOhvXdiElOreQx8ml3hE7vTx1ZssibOxv18MtP@'
+      # E use apenas o formato JDBC correto: jdbc:postgresql://<HOST>:<PORTA>/<DB_NAME>
+      - TRACCAR_DATABASE_URL=jdbc:postgresql://j0448s8ks8swkww0w8wkg08g:5432/postgres
       - TRACCAR_DATABASE_USER=postgres
       - TRACCAR_DATABASE_PASSWORD=P0n3P5u7VBashK5ofQSBAYUTIVpOhvXdiElOreQx8ml3hE7vTx1ZssibOxv18MtP
       - JVM_OPTIONS=-Xms1g -Xmx1g -Djava.net.preferIPv4Stack=true
 
-# Definição dos volumes nomeados do Docker
 volumes:
   traccar_logs:
   traccar_data:
