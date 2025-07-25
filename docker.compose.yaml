@@ -1,31 +1,26 @@
-# docker-compose.yml
-
 version: '3.8'
 
 services:
   traccar:
-    build: . # O Docker Compose irá construir a imagem a partir do Dockerfile neste diretório
-    container_name: traccar
+    image: traccar/traccar:latest
     hostname: traccar
     restart: unless-stopped
-
     ports:
-      - "8082:8082"
-      - "5000-5150:5000-5150/tcp"
-      - "5000-5150:5000-5150/udp"
-
+      - "8082:8082" # Porta da interface web (interna do container)
+      - "5000-5150:5000-5150/tcp" # Portas para protocolos de rastreadores (TCP)
+      - "5000-5150:5000-5150/udp" # Portas para protocolos de rastreadores (UDP)
     volumes:
-      - traccar_logs:/opt/traccar/logs:rw
-      - traccar_data:/opt/traccar/data:rw
-
+      - traccar_logs:/opt/traccar/logs
+      - traccar_data:/opt/traccar/data
     environment:
+      # Configuração do Banco de Dados PostgreSQL - Use o nome do serviço do Coolify e a porta interna (5432)
       - TRACCAR_DATABASE_DRIVER=org.postgresql.Driver
-      # MUDANÇA AQUI: Remova 'postgres://postgres:P0n3P5u7VBashK5ofQSBAYUTIVpOhvXdiElOreQx8ml3hE7vTx1ZssibOxv18MtP@'
-      # E use apenas o formato JDBC correto: jdbc:postgresql://<HOST>:<PORTA>/<DB_NAME>
-      - TRACCAR_DATABASE_URL=jdbc:postgresql://j0448s8ks8swkww0w8wkg08g:5432/postgres
+      - TRACCAR_DATABASE_URL=jdbc:postgresql://postgresql-traccar:5432/postgres
       - TRACCAR_DATABASE_USER=postgres
-      - TRACCAR_DATABASE_PASSWORD=P0n3P5u7VBashK5ofQSBAYUTIVpOhvXdiElOreQx8ml3hE7vTx1ZssibOxv18MtP
-      - JVM_OPTIONS=-Xms1g -Xmx1g -Djava.net.preferIPv4Stack=true
+      - TRACCAR_DATABASE_PASSWORD=jxyJ5aRTO5NvyL6O8HAEopNemVd5rKjYwizJAygtZLlkuK5gi26Maqx1U3MemKCB
+      - JVM_OPTIONS=-Xms1g -Xmx1g -Djava.net.preferIPv4Stack=true # Ajuste a memória conforme a necessidade da sua VPS
+    # Caso precise de um Dockerfile para build customizado (opcional)
+    # build: .
 
 volumes:
   traccar_logs:
