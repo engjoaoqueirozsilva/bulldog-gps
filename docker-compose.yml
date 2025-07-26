@@ -5,7 +5,7 @@ services:
     image: traccar/traccar:latest
     container_name: traccar-server
     ports:
-      - "8082:8082" # Porta da interface web do Traccar
+      - "80:8082" # Porta da interface web do Traccar
       - "5000-5150:5000-5150" # Portas para os dispositivos (ajuste conforme necessário)
     environment:
       # Configurações para conexão com o PostgreSQL externo
