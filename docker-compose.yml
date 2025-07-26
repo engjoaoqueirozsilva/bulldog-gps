@@ -2,19 +2,29 @@
 
 services:
   traccar:
-    image: traccar/traccar:latest
-    container_name: traccar-server
+    image: 'traccar/traccar:latest'
+    container_name: traccar 
     ports:
-      - "8082:8082" # Porta da interface web do Traccar
-      - "5000-5150:5000-5150" # Portas para os dispositivos (ajuste conforme necessário)
+      - '5000-5150:5000-5150' # Portas para os dispositivos (ajuste conforme necessário)
     environment:
-      # Configurações para conexão com o PostgreSQL externo
-      - DATABASE_DRIVER=org.postgresql.Driver
-      - DATABASE_URL=jdbc:postgresql://147.93.68.31:9087/postgres # ATENÇÃO AQUI!
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=jxyJ5aRTO5NvyL6O8HAEopNemVd5rKjYwizJAygtZLlkuK5gi26Maqx1U3MemKCB
+      # Usar os dados exatos do seu PostgreSQL na VPS
+      DATABASE_DRIVER: org.postgresql.Driver
+      DATABASE_URL: 'jdbc:postgresql://147.93.68.31:9087/postgres' # <--- IP e Porta do seu PostgreSQL VPS
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: jxyJ5aRTO5NvyL6O8HAEopNemVd5rKjYwizJAygtZLlkuK5gi26Maqx1U3MemKCB # <--- Sua senha do PostgreSQL VPS
     volumes:
-      - ./data:/opt/traccar/data # Mapeia o diretório de dados do Traccar para o host
-      - ./logs:/opt/traccar/logs # Mapeia os logs do Traccar para o host
-      - ./traccar.xml:/opt/traccar/conf/traccar.xml
-    
+      # Use paths relativos aqui, o Coolify os converterá para os caminhos absolutos
+      - './traccar.xml:/opt/traccar/conf/traccar.xml'
+      - './logs:/opt/traccar/logs'
+
+    restart: unless-stopped # Use 'unless-stopped' como o Coolify
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.http-0-qk88sg04sgw8csgwoc4s8gk4-traccar.entryPoints=http
+      - traefik.http.routers.http-0-qk88sg04sgw8csgwoc4s8gk4-traccar.middlewares=gzip,redirect-to-https # Adicione o redirect-to-https middleware aqui
+      - 'traefik.http.routers.http-0-qk88sg04sgw8csgwoc4s8gk4-traccar.rule=Host(`asterion.ia-outsider.com.br`) && PathPrefix(`/`)'
+      - 'traefik.http.routers.https-0-qk88sg04sgw8csgwoc4s8gk4-traccar.entryPoints=https' # Adicione o router para HTTPS
+      - 'traefik.http.routers.https-0-qk88sg04sgw8csgwoc4s8gk4-traccar.rule=Host(`asterion.ia-outsider.com.br`) && PathPrefix(`/`)'
+      - 'traefik.http.routers.https-0-qk88sg04sgw8csgwoc4s8gk4-traccar.tls=true'
+      - 'traefik.http.services.traccar.loadbalancer.server.port=8082' 
