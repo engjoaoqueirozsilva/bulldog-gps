@@ -17,4 +17,4 @@ services:
       - ./data:/opt/traccar/data # Mapeia o diretório de dados do Traccar para o host
       - ./logs:/opt/traccar/logs # Mapeia os logs do Traccar para o host
       - ./traccar.xml:/opt/traccar/conf/traccar.xml
-    restart: always
+    
