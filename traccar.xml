@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
 <properties>
     <entry key='database.driver'>org.postgresql.Driver</entry>
-    <entry key='database.url'>jdbc:postgresql://host.docker.internal:5432/traccar</entry>
-    <entry key='database.user'>traccar</entry>
-    <entry key='database.password'>Mu0602@@</entry>
+    <entry key='database.url'>jdbc:postgresql://147.93.68.31:9087/postgres</entry>
+    <entry key='database.user'>postgres</entry>
+    <entry key='database.password'>jxyJ5aRTO5NvyL6O8HAEopNemVd5rKjYwizJAygtZLlkuK5gi26Maqx1U3MemKCB</entry>
 </properties>
